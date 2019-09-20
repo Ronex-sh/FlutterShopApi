@@ -90,6 +90,10 @@ Route::get('/home', 'HomeController@index')->name('home');
     Route::group(['auth','user_is_support'], function () {
    //units
     Route::get('units','UnitController@index')->name('units');
+    Route::post('units','UnitController@store');
+    Route::delete('units','UnitController@delete');
+    Route::put('units','UnitController@update');
+
    //categories
     Route::get('categories','CategoryController@index')->name('categories');
 
