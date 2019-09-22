@@ -13,14 +13,57 @@ class UnitController extends Controller
 
 public function index(){
     $units=Unit:: paginate(env('PAGINATION_COUNT'));
-    return view('admin.units.units')->with(['units'=> $units]);
+
+    return view('admin.units.units')->with([
+        'units'=> $units,
+        'showLinks'=>true,
+
+    ]);
+
+}
+private function unitNameExists($unitName){
+      $unit=Unit::where(
+       'unit_name','=',$unitName
+      )->first();
+
+      if ($unit){
+          session::flash('message','Unit name already exists');
+          return true;
+      }
+      return false;
+}
+private  function  unitCodeExists($unitCode){
+
+    $unit=Unit::where(
+        'unit_code','=',$unitCode
+
+    )->first();
+
+
+    if ($unit){
+        session::flash('message','Unit code already exists');
+        return true;
+    }
+    return false;
 }
 
 public  function store(Request $request){
+
 $request->validate([
     'unit_name'=>'required',
     'unit_code'=>'required'
 ]);
+
+$unitName=$request->input('unit_name');
+$unitCode=$request->input('unit_code');
+
+if($this->unitNameExists($unitName)){
+    return redirect()->back();
+};
+if($this->unitCodeExists($unitCode)){
+    return redirect()->back();
+};
+
 $unit=new Unit();
 $unit->unit_name=$request->input('unit_name');
 $unit->unit_code=$request->input('unit_code');
@@ -47,12 +90,43 @@ public  function update(Request $request){
    'unit_id'=>'required',
      'unit_name'=>'required'
  ]);
+    $unitName=$request->input('unit_name');
+    $unitCode=$request->input('unit_code');
+
+    if($this->unitNameExists($unitName)){
+        return redirect()->back();
+    };
+    if($this->unitCodeExists($unitCode)){
+        return redirect()->back();
+    };
 $unitId=$request->input('unit_id');
 $unit=Unit::find($unitId);
 $unit->unit_name=$request->input('unit_name');
 $unit->unit_code=$request->input('unit_code');
 $unit->save();
     session::flash('message' , 'Unit'.$unit->unit_name.'has been updated');
+    return redirect()->back();
+}
+
+public  function  search(Request $request){
+$request->validate([
+    'unit_search'=>'required'
+]);
+$searchTerm=$request->input('unit_search');
+$units=Unit::where(
+'unit_name','LIKE','%'.$searchTerm.'%'
+)->orWhere(
+    'unit_code','LIKE','%'.$searchTerm.'%'
+)->get();
+
+if (count($units)>0){
+    return view('admin.units.units')->with(
+         ['units'=>$units,
+          'showLinks'=>false,
+         ]
+    );
+}
+    session::flash('message' , 'Unit not found !!');
     return redirect()->back();
 }
 
