@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Tag;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class TagController extends Controller
 {
@@ -11,4 +12,26 @@ class TagController extends Controller
         $tags=Tag::paginate(env('PAGINATION_COUNT'));
         return view('admin.tags.tags')->with(['tags'=>$tags]);
     }
+
+    public  function store(Request $request){
+$request->validate([
+    'tag_name'=>'required'
+]);
+
+$tagName=$request->input('tag_name');
+$tag=Tag::where('tag','=', $tagName)->get();
+
+if(count($tag)>0){
+    session::flash('message','tag ' .$tagName. ' reade exists');
+       return redirect()->back();
+}
+$newTag=new Tag();
+$newTag->tag=$tagName;
+$newTag->save();
+session::flash('message','tag'.$tagName.'has been add');
+return redirect()->back();
+
+    }
+
+
 }

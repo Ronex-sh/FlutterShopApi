@@ -102,6 +102,7 @@ Route::get('/home', 'HomeController@index')->name('home');
     Route::get('products','ProductController@index')->name('products');
     //tags
     Route::get('tags','TagController@index')->name('tags');
+    Route::post('tags','TagController@store');
     //countries
     Route::get('countries','CountryController@index')->name('countries'); //name( الاسم المختصر الي يعبر عن هذا الراوت الي ممكن استخدامه في اي مكان مثل app.blade.php)
     //cities
