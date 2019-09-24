@@ -93,16 +93,26 @@ Route::get('/home', 'HomeController@index')->name('home');
     Route::post('units','UnitController@store');
     Route::delete('units','UnitController@delete');
     Route::put('units','UnitController@update');
-    Route::post('search-units','UnitController@search')->name('search-units');
+    Route::get('search-units','UnitController@search')->name('search-units');
 
    //categories
     Route::get('categories','CategoryController@index')->name('categories');
+        Route::post('categories','CategoryController@store');
+        Route::get('search-categories','CategoryController@search')->name('search-categories');
+        Route::delete('categories','CategoryController@delete');
+        Route::put('categories','CategoryController@update');
+
 
     //products
     Route::get('products','ProductController@index')->name('products');
+
     //tags
     Route::get('tags','TagController@index')->name('tags');
     Route::post('tags','TagController@store');
+    Route::get('search-tags','TagController@search')->name('search-tags');
+    Route::delete('tags','TagController@delete');
+    Route::put('tags','TagController@update');
+
     //countries
     Route::get('countries','CountryController@index')->name('countries'); //name( الاسم المختصر الي يعبر عن هذا الراوت الي ممكن استخدامه في اي مكان مثل app.blade.php)
     //cities

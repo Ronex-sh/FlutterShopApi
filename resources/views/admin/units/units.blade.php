@@ -64,7 +64,7 @@
                 </div>
 
                 {{(!is_null($showLinks) && $showLinks)?$units->links():''}}
-                        <form action="{{route('search-units')}}" method="post">
+                        <form action="{{route('search-units')}}" method="get">
                             @csrf
                         <div class="form-group col-md-6">
 
