@@ -24,4 +24,8 @@ class Product extends Model
     public function tags(){
         return $this->belongsToMany(Tag::class);
     }
+    public function hasUnit(){
+        return $this->belongsTo(Unit::class,'unit','id');
+
+    }
 }

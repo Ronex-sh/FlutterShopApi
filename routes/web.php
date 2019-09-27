@@ -97,14 +97,22 @@ Route::get('/home', 'HomeController@index')->name('home');
 
    //categories
     Route::get('categories','CategoryController@index')->name('categories');
-        Route::post('categories','CategoryController@store');
-        Route::get('search-categories','CategoryController@search')->name('search-categories');
-        Route::delete('categories','CategoryController@delete');
-        Route::put('categories','CategoryController@update');
+    Route::post('categories','CategoryController@store');
+    Route::get('search-categories','CategoryController@search')->name('search-categories');
+    Route::delete('categories','CategoryController@delete');
+    Route::put('categories','CategoryController@update');
 
 
     //products
     Route::get('products','ProductController@index')->name('products');
+
+    Route::get('new-product','ProductController@newProduct')->name('new-product');
+    Route::get('update-product/{id}','ProductController@newProduct')->name('update-product');
+
+    Route::put('update-product','ProductController@update')->name('update-product');
+    Route::post('new-product','ProductController@store');
+
+    Route::delete('new-product/{id}','ProductController@delete');
 
     //tags
     Route::get('tags','TagController@index')->name('tags');
