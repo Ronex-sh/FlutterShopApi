@@ -104,15 +104,12 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 
     //products
-    Route::get('products','ProductController@index')->name('products');
-
-    Route::get('new-product','ProductController@newProduct')->name('new-product');
-    Route::get('update-product/{id}','ProductController@newProduct')->name('update-product');
-
-    Route::put('update-product','ProductController@update')->name('update-product');
-    Route::post('new-product','ProductController@store');
-
-    Route::delete('new-product/{id}','ProductController@delete');
+        Route::get ('products', 'productController@index')->name('products');
+        Route::get ('new-product', 'productController@newProduct')->name('new-product');
+        Route::get ('update-product/{id}', 'productController@newProduct')->name('update-product');
+        Route::put ('update-product/{id}', 'productController@update');
+        Route::post ('new-product', 'productController@store');
+        Route::delete ('products/{id}', 'productController@delete');
 
     //tags
     Route::get('tags','TagController@index')->name('tags');
@@ -122,7 +119,7 @@ Route::get('/home', 'HomeController@index')->name('home');
     Route::put('tags','TagController@update');
 
     //countries
-    Route::get('countries','CountryController@index')->name('countries'); //name( الاسم المختصر الي يعبر عن هذا الراوت الي ممكن استخدامه في اي مكان مثل app.blade.php)
+    Route::get('countries','CountryController@index')->name('countries');
     //cities
     Route::get('cities','CityController@index')->name('cities');
     //states

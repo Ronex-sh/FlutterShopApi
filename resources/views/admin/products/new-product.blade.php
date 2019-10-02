@@ -6,17 +6,17 @@
             <div class ="col-md-12">
                 <div class="card">
                     <div class="card-header">
-                  {!!  !is_null($product)?'Update Product <span class="product-header-title">'.$product->title.'</span>' :'New product'!!}
+                        {!! !is_null($product) ?  ' update Product <span class ="product-header-title"> ' . $product->title . '</span>' :' New Product ' !!}
                     </div>
 
                     <div class="card-body">
 
-                        <form action="{{route('update-product')}}" method="post" class="row">
+                        <form action="{{ (!is_null($product))? route('update-product' , ['id'=> $product->id]): route('new-product')}}" method="post" class="row" enctype="multipart/form-data">
                             @csrf
                             @if(!is_null($product))
-                                <input  type="hidden" name="_method" value="PUT"/>
-                                <input  type="hidden" name="product_id" value="{{$product->id}}"/>
-                                @endif
+                                <input type="hidden" name="_method" value="PUT">
+                                <input type="hidden" name="product_id" value="{{$product->id}}">
+                            @endif
 
                             <div class="form-group col-md-12">
                                 <label for="product_title">product Title</label>
@@ -27,7 +27,7 @@
                             <div class="form-group col-md-12">
 
                                 <label for="product_title">product Description</label>
-                                  <textarea class="form-control" name="product_description" id="product_description" cols="30" rows="10" required>
+                                  <textarea placeholder="Description" class="form-control" name="product_description" id="product_description" cols="30" rows="10" required>
                                      {{(!is_null($product))? $product->description:''}} </textarea>
 
                             </div>
@@ -57,7 +57,7 @@
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="product_price">product price</label>
-                                <input type="text" class="form-control" id="product_price"
+                                <input type="text" class="form-control" id="product_price" step="any"
                                        name="product_price" placeholder="product Price" required
                                        value="{{(!is_null($product))?$product->price:''}}" >
                             </div>
@@ -65,30 +65,61 @@
 
                     <div class="form-group col-md-6">
                         <label for="product_discount">Product Discount</label>
-                        <input type="text" class="form-control" id="product_discount"
+                        <input type="text" class="form-control" id="product_discount" step="any"
                                name="product_discount" placeholder="Product Discount" required
                                value="{{(!is_null($product))?$product->discount:0}}" >
                     </div>
 
                             <div class="form-group col-md-12">
                                 <label for="product_total">product Total</label>
-                                <input type="text" class="form-control" id="product_total"
+                                <input type="text" class="form-control" id="product_total" step="any"
                                        name="product_total" placeholder="product Total" required
                                        value="{{(!is_null($product))?$product->total:''}}" >
                             </div>
                               {{-- add options                           --}}
                             <div class="form-group col-md-12">
 
-                                <table id="options-table" class="table table-striped"></table>
-                                <a class="btn btn-primary btn-option-btn" href="" >add option</a>
+                                <table id="options-table" class="table table-striped">
+{{--                                 <tr>  <td><input type="hidden" name="options[]" ></td></tr>--}}
+
+
+                                </table>
+                                <a class="btn btn-primary add-option-btn" href="" >add option</a>
 
 
                             </div>
                              {{--/add option                            --}}
 
-                            <button type="submit">test</button>
+
+                             {{--images                            --}}
+                            <div class="form-group col-md-12">
+                                <div class="row">
+                                    @for($i=0;$i<6;$i++)
+                                        <div class="col-md-4 col-sm-12 mb-4">
+
+                                            <div class="card image-card-upload" >
+                                                <a href="" class="remove-image-upload"><i class="fas fa-minus-circle"></i></a>
+                                             <a href="" class="activate-image-upload" data-fileid="image-{{$i}}">
+                                                <div class="card-body" style="text-align: center">
+                                                    <i class="far fa-image"></i>
+
+                                                </div>
+                                             </a>
+                                            </div>
+                                            <input name="product_images[]" type="file" class="form-control-file image-file-upload" id="image-{{$i}}">
+
+                                        </div>
+
+                                    @endfor
+                                </div>
+                            </div>
+                            {{--/images                           --}}
 
 
+                            <div class="form-group col-md-6 offset-3">
+                            <button type="submit" class="btn btn-primary btn-block">SAVE</button>
+
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -137,9 +168,12 @@
 <script>
 
     $(document).ready(function () {
+        var optionNamesList=[];
         var $optionWindow=$('#options-window');
-        var $addOptionBtn=$('.btn-option-btn');
+        var $addOptionBtn=$('.add-option-btn');
         var $optionTable=$('#options-table');
+        var optionNameRow='';
+        var $activateImageUpload=$('.activate-image-upload');
 
         $addOptionBtn.on('click',function (e) {
             e.preventDefault();
@@ -152,7 +186,6 @@
            e.preventDefault();
            $(this).parent().parent().remove()
         });
-        // سيتم انشاء زر الادد اوبشن بتن دينماكي عند الضغط عليه  حيث هنا نقول للدوكيمنت انتبه اذا تشوف ادد اوبشن بتن  وكلك اذا المستخدم يريد هذا الزر مفعل للقيام بامر ما
         $(document).on('click','.add-option-button',function (e) {
             e.preventDefault();
             var $optionName=$('#option_name');
@@ -165,14 +198,70 @@
                 alert('value require');
                 return false
             }
-            var optionRow='<tr><td>'+$optionName.val()+'</td><td>'+$optionValue.val()+'</td><td><a href=""class="remove-option"><i class="fas fa-minus-circle"></i></a><input type="hidden"name="'+$optionName.val()+'[]"value="'+$optionValue.val()+'"></td></tr>';
+
+
+            if (! optionNamesList.includes($optionName.val())){
+                optionNamesList.push($optionName.val());
+                optionNameRow='<td><input type="hidden" name="options[]" value="'+ $optionName.val() +'"></td>';
+            }
+
+
+
+            var optionRow='<tr><td>'+$optionName.val()+'</td><td>'+$optionValue.val()+'</td><td><a href="" class="remove-option"><i class="fas fa-minus-circle"></i></a><input type="hidden" name="'+$optionName.val()+'[]" value="'+$optionValue.val()+'"></td></tr>';
             $optionTable.append(
                 optionRow
+
+            );
+            $optionTable.append(
+                optionNameRow
 
             );
             $optionValue.val('');
 
         });
+        function readURL(input,imageID){
+            if (input.files &&input.files[0]){
+               var reader= new FileReader();
+               reader.onload=function (e) {
+                   $('#'+imageID).attr('src',e.target.result);
+                   // console.log(e.target.result);
+               };
+               reader.readAsDataURL(input.files[0]);
+            }
+        }
+        function resetFileUpload(FileUploadID,imageID,$ei,$ed){
+            $('#'+imageID).attr('src','');
+            $ei.fadeIn(); // use to Show item after hidden
+            $ed.fadeOut();
+            $(FileUploadID).val(''); //His way in The JavaScript  to delete data in case it is kept in the <input>
+                //or
+             document.getElementById(FileUploadID).value=''; //His way in The Jquery  to delete data in case it is kept in the <input>
+
+
+        }
+
+        $activateImageUpload.on('click',function (e) {
+            e.preventDefault();
+            var fileUploadID=$(this).data('fileid');
+            var me=$(this);
+            $('#'+fileUploadID).trigger('click');
+            var imagetag='<img id="i'+fileUploadID+'" src="" class="card-img-top">';
+            $(this).append(imagetag);
+
+            $('#'+fileUploadID).on('change',function (e) {
+                readURL(this,'i'+fileUploadID);
+                me.find("i").fadeOut(); //fadeout use to Hide and not delete
+                //to show
+                me.parent().find('.remove-image-upload').fadeIn();
+                // to remove
+                $removeThisImage=me.parent().find('.remove-image-upload').fadeIn();
+                $removeThisImage.on('click',function (e) {
+                    e.preventDefault();
+                    resetFileUpload('#'+fileUploadID,'i'+fileUploadID,me.find("i"),$removeThisImage);
+                })
+
+            })
+        })
     })
 </script>
 

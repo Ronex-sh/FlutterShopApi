@@ -28,4 +28,7 @@ class Product extends Model
         return $this->belongsTo(Unit::class,'unit','id');
 
     }
+    public function jsonOptions(){
+        return json_decode($this->options);
+    }
 }
