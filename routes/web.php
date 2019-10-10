@@ -106,8 +106,10 @@ Route::get('/home', 'HomeController@index')->name('home');
     //products
         Route::get ('products', 'productController@index')->name('products');
         Route::get ('new-product', 'productController@newProduct')->name('new-product');
-        Route::get ('update-product/{id}', 'productController@newProduct')->name('update-product');
-        Route::put ('update-product/{id}', 'productController@update');
+        Route::post ('delete-image', 'productController@deleteImage')->name('delete-image');
+
+        Route::get ('update-product/{id}', 'productController@newProduct')->name('update-product-form');
+        Route::put ('update-product', 'productController@update')->name('update-product');
         Route::post ('new-product', 'productController@store');
         Route::delete ('products/{id}', 'productController@delete');
 

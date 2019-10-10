@@ -10694,7 +10694,6 @@ a.activate-image-upload {
   position: absolute;
   right: 15px;
   z-index: 99999;
-  display: none;
 }
 
 input.image-file-upload {
