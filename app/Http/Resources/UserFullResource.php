@@ -25,7 +25,7 @@ class UserFullResource extends JsonResource
             'mobile_confirmed' => $this->mobile_verified,
             'shipping_address' => new AddressResource($this->shippingAddress),
             'billing_address' => new AddressResource($this->billingAddress),
-            'member_since'  => $this->created_at->format('l js \\of F Y'),
+            'member_since'  => $this->created_at->format('l jS \\of F Y'),
 
         ];
     }
