@@ -40,7 +40,7 @@ class AuthController extends Controller
 
            $userName=$request->input('email');
 //         $password=$request->input('password');
-         $credentials=$request->only('email','password');
+           $credentials=$request->only('email','password');
 
          if (Auth::attempt($credentials)){
              $user=User::where('email','=',$userName )->first();
