@@ -19,7 +19,22 @@
 
                  <h4>{{ $product->title}}</h4>
                  <p>Category: {{ (is_object($product->category) )?$product->category->name:''}}</p>
-                 <p> price: {{$currence_code}} {{$product->price}}
+                     <p> price: {{$currence_code}} {{$product->price}}</p>
+
+                     @php
+                     $imageUrl='';
+                     if(count($product->images)>0){
+                     if(strpos($product->images[0]->url,'https') !==false||strpos($product->images[0]->url,'http')!==false){
+                     $imageUrl=$product->images[0]->url;
+
+                     }else{
+                     $imageUrl=asset('storage/',$product->images[0]->url);
+                     }
+                     }
+
+                     @endphp
+
+
 
                  {!!(count($product->images) > 0)?'<img class="img-thumbnail card-img"src="' .$product->images[0]->url.'"/>':'' !!}
 
@@ -63,14 +78,17 @@
 
                 </div>
                 </div>
+
                 @endforeach
 
                 </div>
+
                 {{$products->links()}}
             </div>
             </div>
             </div>
             </div>
+
     @if(Session::has('message'))
         <div class="toast" style ="position: absolute; z-index: 999999; top: 5%; right: 5%;">
             <div class="toast-header">
