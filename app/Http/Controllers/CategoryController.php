@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Category;
+use App\Image;
 use App\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -27,9 +28,12 @@ class CategoryController extends Controller
     }
 
     public  function  store(Request $request){
+        dd($request);
 
         $request->validate([
-            'category_name'=>'required'
+            'category_name'=>'required',
+            'category_image'=>'required',
+            'category_direction'=>'required'
         ]);
          $categoryname=$request->input('category_name');
 if ($this->categoryNameExists($categoryname)){
@@ -38,6 +42,15 @@ if ($this->categoryNameExists($categoryname)){
 }
 $category=new Category();
 $category->name=$categoryname;
+$category->image_direction=$request->input('image_direction');
+
+        if($request->hasFile('category_image')){
+            $image=$request->file('category_image');
+            $path=$image->store('public');
+            $category->image_url=$path;
+        }
+
+
 $category->save();
         session::flash('message','category has been add');
         return back();

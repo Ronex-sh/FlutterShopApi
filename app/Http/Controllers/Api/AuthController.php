@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Resources\UserApiResource;
 use App\User;
+use http\Env\Response;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -46,10 +47,11 @@ class AuthController extends Controller
              $user=User::where('email','=',$userName )->first();
               return new UserApiResource($user);
          }
-         return[
+         $massage=[
              'error' => true,
              'message' =>'user login failed',
          ];
+         return response($massage,401);
 
 
     }
